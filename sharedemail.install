@@ -1,0 +1,27 @@
+<?php
+//$Id$
+
+/**
+ *  Implementation of hook_install().
+ */
+
+function sharedemail_install() {
+  switch($GLOBALS['db_type']) {
+    case 'mysql':    // use same as mysqli
+    case 'mysqli':
+    case 'pgsql':
+      db_query("UPDATE {system} SET weight = -99 WHERE name = 'sharedemail'");
+      $success = TRUE;
+      break;
+    default:
+      drupal_set_message(t('Unsupported Database.'));
+    break;
+  }
+  if($success) {
+    drupal_set_message(t('The Shared E-mail module has been installed successfully'));
+  }
+  else {
+    drupal_set_message(t('Installation of Shared E-mail was unsuccessful.'),
+      'error');
+  }
+}

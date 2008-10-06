@@ -1,0 +1,47 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * This module overrides the 'user' module's validation that
+ * prevents the same email address being used by more than one user
+ *
+ * All this module does is modify the email address before it is validated by the user module.
+ * Because it only changes the edit value rather than the form value, the validation will pass
+ * but the original unchanged email is still stored properly.
+ *
+ * Works for both registration and account updates.
+ *
+ * Displays a warning to the user that they are using a shared email.
+ *
+ * based on http://drupal.org/node/15578#comment-249157
+ */
+
+/**
+ * Implementation of hook_user().
+ *
+ */
+function sharedemail_user($type, & $edit, & $user, $category= NULL) {
+  $mail= $edit['mail'];
+  if ($type == 'validate' && !user_validate_mail($mail)) {
+    if (db_num_rows(db_query("SELECT uid FROM {users} WHERE uid != %d AND LOWER(mail) = LOWER('%s')", $user->uid, $edit['mail'])) > 0) {`
+      $edit['mail']= 'sharedemail_' . $mail;
+      drupal_set_message(t('WARNING: The e-mail address you are using (%mail) has already been registered on this site by another user. '
+        'You should be aware that personal information such as password resets will be sent to this address. ' .
+        'We strongly recommend changing your registered address to a different e-mail address. ' .
+        'You can do this at any time from your account page when you login.', array (
+          '%mail' => $mail
+      )));
+    }
+  }
+}
+
+/**
+ *  Implementation of hook_simpletest().
+ */
+function sharedemail_simpletest() {
+  $module_name = 'Shared E-mail';
+  $dir = drupal_get_path('module', 'sharedemail'). '/tests';
+  $tests = file_scan_directory($dir, '\.test$');
+  return array_keys($tests);
+}
