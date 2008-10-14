@@ -6,6 +6,13 @@
  */
 
 function sharedemail_install() {
+
+  $msg = t('WARNING: The e-mail address you are using, has already been registered on this site by another user. ' .
+           'You should be aware that personal information such as password resets will be sent to this address. ' .
+           'We strongly recommend changing your registered address to a different e-mail address. ' .
+           'You can do this at any time from your account page when you login.');
+  variable_set('sharedemail_msg', $msg);
+
   switch($GLOBALS['db_type']) {
     case 'mysql':    // use same as mysqli
     case 'mysqli':
@@ -24,4 +31,11 @@ function sharedemail_install() {
     drupal_set_message(t('Installation of Shared E-mail was unsuccessful.'),
       'error');
   }
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function sharedemail_uninstall() {
+  variable_del('sharedemail_msg');
 }
