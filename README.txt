@@ -1,3 +1,4 @@
+
 The shared email module overrides the 'user' module's validation,
 that prevents the same email address being used by more than one user. 
 
@@ -16,3 +17,4 @@ Installation
 * Enable the module in /admin/build/modules
 * Check permissions in /admin/user/access#module-sharedemail
 * By default the warning text will not be displayed unless the 'show warning text' is selected for the users role
+* The email address for user 1 cannot be shared

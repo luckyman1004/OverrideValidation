@@ -9,8 +9,8 @@
 /**
  * Implementation of hook_help().
  */
-function sharedemail_help($section) {
-  switch ($section) {
+function sharedemail_help($path, $arg) {
+  switch ($path) {
     case 'admin/help#sharedemail':
     $output = '<p>'. t('Allows users to use the same email address for multiple accounts') .'</p>';
     return $output;
@@ -27,19 +27,15 @@ function sharedemail_perm() {
 /**
  * Implementation of hook_menu().
  */
-function sharedemail_menu($may_cache) {
-  $items = array();
-  if ($may_cache) {
-     $items[] = array(
-      'path'               => 'admin/settings/sharedemail',
-      'title'              => t('Sharedemail'),
-      'description'        => t('Configure the message that sharedemail displays.'),
-      'callback'           => 'drupal_get_form',
-      'callback arguments' => array('sharedemail_admin_settings'),
-      'access'             => user_access('administer sharedemail'),
-      'type'               => MENU_NORMAL_ITEM,
-    );
-  }
+function sharedemail_menu() {
+  $items['admin/settings/sharedemail'] = array(
+    'title'            => 'Sharedemail',
+    'description'      => 'Configure the message that sharedemail displays.',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('sharedemail_admin_settings'),
+    'access arguments' => array('administer sharedemail'),
+    'type'             => MENU_NORMAL_ITEM,
+  );
   
   return $items;
 }
@@ -54,9 +50,9 @@ function sharedemail_menu($may_cache) {
 function sharedemail_admin_settings() {
   $form = array();
 
-  $msg = t('WARNING: The e-mail address you are using, has already been registered on this site by another user. ' .
-          'You should be aware that personal information such as password resets will be sent to this address. ' .
-          'We strongly recommend changing your registered address to a different e-mail address. ' .
+  $msg = t('WARNING: The e-mail address you are using, has already been registered on this site by another user. '.
+          'You should be aware that personal information such as password resets will be sent to this address. '.
+          'We strongly recommend changing your registered address to a different e-mail address. '.
           'You can do this at any time from your account page when you login.');
 
   $form['sharedemail_msg'] = array(
@@ -74,19 +70,22 @@ function sharedemail_admin_settings() {
  * Implementation of hook_user().
  */
 function sharedemail_user($type, & $edit, & $user, $category= NULL) {
-  $mail= $edit['mail'];
+  $mail = isset($edit['mail']) ? $edit['mail'] : '';
 
   if ($type == 'validate' && !user_validate_mail($mail)) {
-
     // Only show warning message if more than 1 user with the same email
-    if (db_num_rows(db_query("SELECT uid FROM {users} WHERE uid != %d AND LOWER(mail) = LOWER('%s')", $user->uid, $edit['mail'])) > 0) {
-      $edit['mail']= 'sharedemail_' . $mail;
+    $uid = db_result(db_query("SELECT uid FROM {users} WHERE uid <> %d AND LOWER(mail) = LOWER('%s')", $user->uid, $edit['mail']));
+    if (!empty($uid) && $uid != 1) {
+      $edit['mail']= 'sharedemail_'. $mail;
 
       // Show warning text to those with the permission selected
       if (user_access('show warning text')) {
         drupal_set_message(variable_get('sharedemail_msg', ''));
       }
     }
+  } 
+  elseif (($type == 'submit' || $type == 'update') && strpos($mail, 'sharedemail_') == 0) {
+    $edit['mail'] = str_replace('sharedemail_', '', $mail);
   }
 }
 
@@ -95,7 +94,7 @@ function sharedemail_user($type, & $edit, & $user, $category= NULL) {
  */
 function sharedemail_simpletest() {
   $module_name = 'Shared E-mail';
-  $dir = drupal_get_path('module', 'sharedemail'). '/tests';
+  $dir = drupal_get_path('module', 'sharedemail') .'/tests';
   $tests = file_scan_directory($dir, '\.test$');
   return array_keys($tests);
 }
