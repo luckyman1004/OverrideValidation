@@ -75,7 +75,7 @@ function sharedemail_user($type, & $edit, & $user, $category= NULL) {
   if ($type == 'validate' && !user_validate_mail($mail)) {
     // Only show warning message if more than 1 user with the same email
     $uid = db_result(db_query("SELECT uid FROM {users} WHERE uid <> %d AND LOWER(mail) = LOWER('%s')", $user->uid, $edit['mail']));
-    if (!empty($uid) && $uid != 1) {
+    if (!empty($uid)) {
       $edit['mail']= 'sharedemail_'. $mail;
 
       // Show warning text to those with the permission selected

@@ -17,4 +17,3 @@ Installation
 * Enable the module in /admin/build/modules
 * Check permissions in /admin/user/access#module-sharedemail
 * By default the warning text will not be displayed unless the 'show warning text' is selected for the users role
-* The email address for user 1 cannot be shared
