@@ -56,11 +56,11 @@ function sharedemail_admin_settings() {
           'You can do this at any time from your account page when you login.');
 
   $form['sharedemail_msg'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Sharedemail Message'),
+    '#type'          => 'textarea',
+    '#title'         => t('Sharedemail Message'),
     '#default_value' => variable_get('sharedemail_msg', $msg),
-    '#rows' => 15,
-    '#description' => t('The warning message to display to the user when they enter in an e-mail address already used by another user.'),
+    '#rows'          => 15,
+    '#description'   => t('Warning message that is only displayed to users with appropriate permission, when they choose to save an email address already used by another user.'),
   );
 
   return system_settings_form($form);
@@ -69,23 +69,43 @@ function sharedemail_admin_settings() {
 /**
  * Implementation of hook_user().
  */
-function sharedemail_user($type, & $edit, & $user, $category= NULL) {
+function sharedemail_user($type, &$edit, &$user, $category= NULL) {
   $mail = isset($edit['mail']) ? $edit['mail'] : '';
 
-  if ($type == 'validate' && !user_validate_mail($mail)) {
-    // Only show warning message if more than 1 user with the same email
-    $uid = db_result(db_query("SELECT uid FROM {users} WHERE uid <> %d AND LOWER(mail) = LOWER('%s')", $user->uid, $edit['mail']));
-    if (!empty($uid)) {
-      $edit['mail']= 'sharedemail_'. $mail;
-
-      // Show warning text to those with the permission selected
-      if (user_access('show warning text')) {
-        drupal_set_message(variable_get('sharedemail_msg', ''));
+  switch ($type) {
+    case 'validate':
+      // If no problems with validation, do nothing
+      if (user_validate_mail($mail)) {
+        return;
       }
-    }
-  } 
-  elseif (($type == 'submit' || $type == 'update') && strpos($mail, 'sharedemail_') == 0) {
-    $edit['mail'] = str_replace('sharedemail_', '', $mail);
+
+      // Show warning message if more than 1 user with the same email
+      $uid = db_result(db_query("SELECT uid FROM {users} WHERE uid <> %d AND LOWER(mail) = LOWER('%s')", $user->uid, $edit['mail']));
+      if (!empty($uid)) {
+        $edit['mail']= 'sharedemail_'. $mail;
+
+        // Show warning text to those with the proper permission
+        if (user_access('show warning text')) {
+          drupal_set_message(variable_get('sharedemail_msg', ''));
+        }
+      }
+      break;
+    case 'submit':
+    case 'update':
+      if (strpos($mail, 'sharedemail_') == 0) {
+        $edit['mail'] = str_replace('sharedemail_', '', $mail);
+      }
+      break;
+
+    // Creating a new user, this hook is called after db insert
+    case 'insert':
+      $mail = $user->mail;
+      if (strpos($mail, 'sharedemail_') == 0) {
+        $realmail = str_replace('sharedemail_', '', $mail);
+        db_query("UPDATE {users} SET {mail} = '%s' WHERE uid = '%d'", $realmail, $user->uid);
+        $user->mail = $realmail;
+      }
+      break;
   }
 }
 
