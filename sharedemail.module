@@ -92,7 +92,7 @@ function sharedemail_user($type, &$edit, &$user, $category= NULL) {
       break;
     case 'submit':
     case 'update':
-      if (strpos($mail, 'sharedemail_') == 0) {
+      if (strpos($mail, 'sharedemail_') == 0 && isset($edit['mail'])) {
         $edit['mail'] = str_replace('sharedemail_', '', $mail);
       }
       break;
