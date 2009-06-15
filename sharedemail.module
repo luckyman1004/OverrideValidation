@@ -102,7 +102,7 @@ function sharedemail_user($type, &$edit, &$user, $category= NULL) {
       $mail = $user->mail;
       if (strpos($mail, 'sharedemail_') == 0) {
         $realmail = str_replace('sharedemail_', '', $mail);
-        db_query("UPDATE {users} SET {mail} = '%s' WHERE uid = '%d'", $realmail, $user->uid);
+        db_query("UPDATE {users} SET mail = '%s' WHERE uid = '%d'", $realmail, $user->uid);
         $user->mail = $realmail;
       }
       break;
