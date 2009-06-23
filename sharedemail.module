@@ -83,6 +83,9 @@ function sharedemail_user($type, &$edit, &$user, $category= NULL) {
       $uid = db_result(db_query("SELECT uid FROM {users} WHERE uid <> %d AND LOWER(mail) = LOWER('%s')", $user->uid, $edit['mail']));
       if (!empty($uid)) {
         $edit['mail']= 'sharedemail_'. $mail;
+        if (module_exists('logintoboggan')) {
+          $edit['conf_mail'] = 'sharedemail_'. $mail;
+        }
 
         // Show warning text to those with the proper permission
         if (user_access('show warning text')) {
@@ -94,6 +97,9 @@ function sharedemail_user($type, &$edit, &$user, $category= NULL) {
     case 'update':
       if (strpos($mail, 'sharedemail_') == 0 && isset($edit['mail'])) {
         $edit['mail'] = str_replace('sharedemail_', '', $mail);
+        if (module_exists('logintoboggan')) {
+          $edit['conf_mail'] = str_replace('sharedemail_', '', $mail);
+        }
       }
       break;
 
