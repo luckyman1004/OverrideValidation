@@ -1,4 +1,3 @@
-; $Id$
 
 name = "Shared E-mail"
 description = Allow site members to use the same email address more than once.
