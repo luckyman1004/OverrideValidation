@@ -1,7 +1,8 @@
 <?php
+// $Id:$
 
 /**
- * @file Allows for muliple users to share an email address
+ * @file Allow an e-mail address to be used by more than one user account.
  */
 
 /**

@@ -1,6 +1,6 @@
 
-The shared email module overrides the 'user' module's validation,
-that prevents the same email address being used by more than one user. 
+The Shared E-mail module overrides the 'user' module's validation,
+that prevents the same e-mail address being used by more than one user. 
 
 Works for both registration and account updates. 
 
@@ -14,6 +14,6 @@ Because it only changes the edit value rather than the form value,
 the validation will pass but the original unchanged email is still stored properly.
 
 Installation
-* Enable the module in /admin/build/modules
-* Check permissions in /admin/user/access#module-sharedemail
+* Enable the module in /admin/modules
+* Check permissions in /admin/people/permissions#module-sharedemail
 * By default the warning text will not be displayed unless the 'show warning text' is selected for the users role

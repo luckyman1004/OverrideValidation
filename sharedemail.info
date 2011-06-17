@@ -1,4 +1,6 @@
+; $Id:$
 
 name = "Shared E-mail"
-description = Allow site members to use the same email address more than once.
-core = 6.x
+description = Allow an e-mail address to be used by more than one user account.
+core = 7.x
+configure = admin/config/people/sharedemail
