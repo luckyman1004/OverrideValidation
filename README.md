@@ -13,7 +13,21 @@ Based on [Allowing Multiple Accounts from the Same E-Mail Address?
 
 All this module does is remove the unique constraint for the email using a hook.
 
+REQUIREMENTS
+------------
+
+None.
+
 INSTALLATION
 ------------
 
-Install as usual, see [Installing contributed modules](https://drupal.org/node/895232) for further information.
+Install as usual, see [Installing contributed modules
+](https://drupal.org/node/895232) for further information.
+
+CONFIGURATION
+-------------
+
+1. Navigate to settings form through `Admin > Configuration > People > Shared
+E-Mail Settings`
+
+   or directly at path `/admin/config/people/shared-email`

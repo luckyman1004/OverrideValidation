@@ -11,7 +11,6 @@ use Drupal\simpletest\WebTestBase;
  */
 class SharedEmailTest extends WebTestBase {
 
-
   /**
    * A user with permission to administer site configuration.
    *
@@ -119,7 +118,7 @@ class SharedEmailTest extends WebTestBase {
     // Set up a user to check for duplicates.
     $duplicate_user = $this->drupalCreateUser();
 
-    $edit = array();
+    $edit = [];
     $name = $this->randomMachineName();
     $edit['name'] = $name;
     $edit['mail'] = $duplicate_user->getEmail();
