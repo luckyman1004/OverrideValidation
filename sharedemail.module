@@ -29,6 +29,7 @@ function sharedemail_entity_base_field_info_alter(&$fields, EntityTypeInterface 
   if (!empty($fields['mail']) && $entity_type->id() === 'user') {
     $constraints = $fields['mail']->getConstraints();
     unset($constraints['UserMailUnique']);
+    $constraints['SharedEmailUnique'] = [];
     $fields['mail']->setConstraints($constraints);
   }
 }
