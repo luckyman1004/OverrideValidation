@@ -43,6 +43,13 @@ class SharedEmailSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Warning message that is only displayed to users with appropriate permission, when they choose to save an e-mail address already used by another user.'),
     ];
 
+    $form['sharedemail_allowed'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Shared E-mail address whitelist'),
+      '#default_value' => $config->get('sharedemail_allowed'),
+      '#description' => $this->t('Comma separated list of email addresses that may be used to share. Leave blank to allow any.'),
+    ];
+
     return $form;
   }
 
@@ -54,6 +61,7 @@ class SharedEmailSettingsForm extends ConfigFormBase {
     $this
       ->config('sharedemail.settings')
       ->set('sharedemail_msg', $form_state->getValue('sharedemail_msg'))
+      ->set('sharedemail_allowed', $form_state->getValue('sharedemail_allowed'))
       ->save();
     parent::submitForm($form, $form_state);
   }

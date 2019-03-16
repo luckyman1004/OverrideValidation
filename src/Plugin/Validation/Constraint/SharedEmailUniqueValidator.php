@@ -19,9 +19,11 @@ class SharedEmailUniqueValidator extends UniqueFieldValueValidator {
     if (!$item = $items->first()) {
       return;
     }
-    $account = \Drupal::currentUser()->getAccount();
-    if ($account->hasPermission('create shared email account')) {
-      return;
+    if (\Drupal::currentUser()->getAccount()->hasPermission('create shared email account')) {
+      $allowed = \Drupal::config('sharedemail.settings')->get('sharedemail_allowed');
+      if (empty($allowed) || stripos($allowed, $item->value) !== FALSE) {
+        return;
+      }
     }
     parent::validate($items, $constraint);
   }
