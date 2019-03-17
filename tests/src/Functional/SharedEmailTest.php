@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sharedemail\Tests;
+namespace Drupal\Tests\sharedemail\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 
