@@ -101,7 +101,7 @@ class SharedEmailTest extends BrowserTestBase {
   /**
    * Test that a user w/o sufficient permission cannot duplicate email address.
    */
-  public function testNotAllowsDuplicateEmail() {
+  public function testCannotDuplicateEmail() {
 
     $notAllowedUser = $this->drupalCreateUser([
       'administer users',
@@ -126,9 +126,91 @@ class SharedEmailTest extends BrowserTestBase {
   }
 
   /**
+   * Test that a user with sufficient permission can duplicate email address.
+   */
+  public function testCanDuplicateEmail() {
+
+    $this->drupalLogin($this->user);
+
+    // Set up a user to check for duplicates.
+    $duplicateUser = $this->drupalCreateUser();
+
+    $edit = [
+      'name' => $this->randomMachineName(),
+      'mail' => $duplicateUser->getEmail(),
+      'pass[pass1]' => 'Test1Password',
+      'pass[pass2]' => 'Test1Password',
+    ];
+
+    // Attempt to create a new account using an existing email address.
+    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+
+    $this->assertSession()->pageTextContains(t('Created a new user account for @name. No email has been sent.', ['@name' => $edit['name']]));
+  }
+
+  /**
+   * Test email duplication for allowed email addresses.
+   */
+  public function testNotAllowedDuplicateEmail() {
+
+    $this->drupalLogin($this->user);
+
+    // Set up a user to check for duplicates.
+    $duplicateUser = $this->drupalCreateUser();
+
+    $this->config('sharedemail.settings')
+      ->set('sharedemail_allowed', $this->randomMachineName())
+      ->save();
+
+    $edit = [
+      'name' => $this->randomMachineName(),
+      'mail' => $duplicateUser->getEmail(),
+      'pass[pass1]' => 'Test1Password',
+      'pass[pass2]' => 'Test1Password',
+    ];
+
+    // Attempt to create a new account using an existing email address.
+    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+
+    $this->assertSession()->pageTextContains(t('The email address @email is already taken.', ['@email' => $duplicateUser->getEmail()]));
+  }
+
+  /**
+   * Test email duplication for allowed email addresses.
+   */
+  public function testAllowedDuplicateEmail() {
+
+    $this->drupalLogin($this->user);
+
+    $this->config('user.settings')
+      ->set('verify_mail', FALSE)
+      ->set('register', USER_REGISTER_VISITORS)
+      ->save();
+
+    // Set up a user to check for duplicates.
+    $duplicateUser = $this->drupalCreateUser();
+
+    $this->config('sharedemail.settings')
+      ->set('sharedemail_allowed', $duplicateUser->getEmail())
+      ->save();
+
+    $edit = [
+      'name' => $this->randomMachineName(),
+      'mail' => $duplicateUser->getEmail(),
+      'pass[pass1]' => 'Test1Password',
+      'pass[pass2]' => 'Test1Password',
+    ];
+
+    // Attempt to create a new account using an existing email address.
+    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+
+    $this->assertSession()->pageTextContains(t('Created a new user account for @name. No email has been sent.', ['@name' => $edit['name']]));
+  }
+
+  /**
    * Test that a duplicate email is allowed with message.
    */
-  public function testAllowsDuplicateEmailWithMessage() {
+  public function testDuplicateEmailWithMessage() {
 
     $this->drupalLogin($this->user);
 
@@ -157,7 +239,7 @@ class SharedEmailTest extends BrowserTestBase {
   /**
    * Test allowed duplicate email, but w/o access to the message.
    */
-  public function testAllowsDuplicateEmailNoMessage() {
+  public function testDuplicateEmailWithoutMessage() {
 
     $noMessageUser = $this->drupalCreateUser([
       'administer users',
@@ -185,6 +267,7 @@ class SharedEmailTest extends BrowserTestBase {
     // Attempt to create a new account using an existing email address.
     $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
 
+    $this->assertSession()->pageTextContains(t('Created a new user account for @name. No email has been sent.', ['@name' => $edit['name']]));
     $this->assertSession()->pageTextNotContains($this->config('sharedemail.settings')->get('sharedemail_msg'));
   }
 
