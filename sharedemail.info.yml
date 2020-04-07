@@ -3,5 +3,6 @@ type: module
 description: 'Allow an e-mail address to be used by more than one user account'
 configure: sharedemail.settings_form
 core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - drupal:user
