@@ -3,6 +3,7 @@
 namespace Drupal\Tests\sharedemail\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\user\UserInterface;
 
 /**
  * Tests for the sharedemail module.
@@ -78,7 +79,7 @@ class SharedEmailTest extends BrowserTestBase {
 
     $this->config('user.settings')
       ->set('verify_mail', FALSE)
-      ->set('register', USER_REGISTER_VISITORS)
+      ->set('register', UserInterface::REGISTER_VISITORS)
       ->save();
 
     // Set up a user to check for duplicates.
@@ -184,7 +185,7 @@ class SharedEmailTest extends BrowserTestBase {
 
     $this->config('user.settings')
       ->set('verify_mail', FALSE)
-      ->set('register', USER_REGISTER_VISITORS)
+      ->set('register', UserInterface::REGISTER_VISITORS)
       ->save();
 
     // Set up a user to check for duplicates.
@@ -216,7 +217,7 @@ class SharedEmailTest extends BrowserTestBase {
 
     $this->config('user.settings')
       ->set('verify_mail', FALSE)
-      ->set('register', USER_REGISTER_VISITORS)
+      ->set('register', UserInterface::REGISTER_VISITORS)
       ->save();
 
     // Set up a user to check for duplicates.
@@ -251,7 +252,7 @@ class SharedEmailTest extends BrowserTestBase {
 
     $this->config('user.settings')
       ->set('verify_mail', FALSE)
-      ->set('register', USER_REGISTER_VISITORS)
+      ->set('register', UserInterface::REGISTER_VISITORS)
       ->save();
 
     // Set up a user to check for duplicates.
