@@ -58,7 +58,7 @@ function _sharedemail_form_submit($form, &$form_state) {
       ->loadByProperties(['mail' => $form['account']['mail']['#value']]);
     if ($users !== NULL && count($users) > 1) {
       $config = \Drupal::config('sharedemail.settings');
-      \Drupal::messenger()->addStatus($config->get('sharedemail_msg'));
+      \Drupal::messenger()->addWarning($config->get('sharedemail_msg'));
     }
   }
 
