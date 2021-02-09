@@ -50,12 +50,12 @@ function sharedemail_form_user_form_alter(&$form, FormStateInterface $form_state
  * If the user has access to be shown the message and the message applies, show
  * it.
  */
-function _sharedemail_form_submit($form, &$form_state) {
+function _sharedemail_form_submit($form, FormStateInterface $form_state) {
   // Do they have permission to see the message.
   if (\Drupal::currentUser()->hasPermission('access shared email message')) {
     $users = \Drupal::entityTypeManager()
       ->getStorage('user')
-      ->loadByProperties(['mail' => $form['account']['mail']['#value']]);
+      ->loadByProperties(['mail' => $form_state->getValue('mail')]);
     if ($users !== NULL && count($users) > 1) {
       $config = \Drupal::config('sharedemail.settings');
       \Drupal::messenger()->addWarning($config->get('sharedemail_msg'));
