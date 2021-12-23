@@ -61,7 +61,7 @@ class SharedEmailUniqueValidator extends UniqueFieldValueValidator implements Co
       return;
     }
     if ($this->currentUser->hasPermission('create shared email account')) {
-      $allowed = $this->config->getEditable('sharedemail.settings')->get('sharedemail_allowed');
+      $allowed = $this->config->get('sharedemail.settings')->get('sharedemail_allowed');
       if (empty($allowed) || stripos($allowed, $item->value) !== FALSE) {
         return;
       }
