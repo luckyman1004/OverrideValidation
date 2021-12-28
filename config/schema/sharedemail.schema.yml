@@ -7,4 +7,4 @@ sharedemail.settings:
       label: 'Default warning message for Shared Email:'
     sharedemail_allowed:
       type: string
-      label: 'Whitelisted email addresses for Shared Email:'
+      label: 'Allowlisted email addresses for Shared Email:'

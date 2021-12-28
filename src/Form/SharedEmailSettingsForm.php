@@ -45,7 +45,7 @@ class SharedEmailSettingsForm extends ConfigFormBase {
 
     $form['sharedemail_allowed'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Shared E-mail address whitelist'),
+      '#title' => $this->t('Shared E-mail address allowlist'),
       '#default_value' => $config->get('sharedemail_allowed'),
       '#description' => $this->t('Comma separated list of email addresses that may be used to share. Leave blank to allow any.'),
     ];
