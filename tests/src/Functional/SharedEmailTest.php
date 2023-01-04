@@ -24,7 +24,7 @@ class SharedEmailTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'sharedemail',
   ];
 
@@ -36,7 +36,7 @@ class SharedEmailTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->user = $this->drupalCreateUser([
       'administer users',
@@ -64,9 +64,10 @@ class SharedEmailTest extends BrowserTestBase {
     $edit = [
       'sharedemail_msg' => 'Test message',
     ];
+    $this->drupalGet('admin/config/people/shared-email');
 
     // Post the form.
-    $this->drupalPostForm('admin/config/people/shared-email', $edit, t('Save configuration'));
+    $this->submitForm($edit, t('Save configuration'));
 
     // Test the new values are there.
     $this->drupalGet('admin/config/people/shared-email');
@@ -96,9 +97,10 @@ class SharedEmailTest extends BrowserTestBase {
       'pass[pass1]' => 'Test1Password',
       'pass[pass2]' => 'Test1Password',
     ];
+    $this->drupalGet('admin/people/create');
 
     // Attempt to create a new account using a unique email address.
-    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(t('Created a new user account for @name. No email has been sent.', ['@name' => $edit['name']]));
     $this->assertSession()->pageTextNotContains($this->config('sharedemail.settings')->get('sharedemail_msg'));
@@ -124,9 +126,10 @@ class SharedEmailTest extends BrowserTestBase {
       'pass[pass1]' => 'Test1Password',
       'pass[pass2]' => 'Test1Password',
     ];
+    $this->drupalGet('admin/people/create');
 
     // Attempt to create a new account using an existing email address.
-    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(t('The email address @email is already taken.', ['@email' => $duplicateUser->getEmail()]));
   }
@@ -147,9 +150,10 @@ class SharedEmailTest extends BrowserTestBase {
       'pass[pass1]' => 'Test1Password',
       'pass[pass2]' => 'Test1Password',
     ];
+    $this->drupalGet('admin/people/create');
 
     // Attempt to create a new account using an existing email address.
-    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(t('Created a new user account for @name. No email has been sent.', ['@name' => $edit['name']]));
   }
@@ -174,9 +178,10 @@ class SharedEmailTest extends BrowserTestBase {
       'pass[pass1]' => 'Test1Password',
       'pass[pass2]' => 'Test1Password',
     ];
+    $this->drupalGet('admin/people/create');
 
     // Attempt to create a new account using an existing email address.
-    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(t('The email address @email is already taken.', ['@email' => $duplicateUser->getEmail()]));
   }
@@ -206,9 +211,10 @@ class SharedEmailTest extends BrowserTestBase {
       'pass[pass1]' => 'Test1Password',
       'pass[pass2]' => 'Test1Password',
     ];
+    $this->drupalGet('admin/people/create');
 
     // Attempt to create a new account using an existing email address.
-    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(t('Created a new user account for @name. No email has been sent.', ['@name' => $edit['name']]));
   }
@@ -234,9 +240,10 @@ class SharedEmailTest extends BrowserTestBase {
       'pass[pass1]' => 'Test1Password',
       'pass[pass2]' => 'Test1Password',
     ];
+    $this->drupalGet('admin/people/create');
 
     // Attempt to create a new account using an existing email address.
-    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(t('Created a new user account for @name. No email has been sent.', ['@name' => $edit['name']]));
     $this->assertSession()->pageTextContains($this->config('sharedemail.settings')->get('sharedemail_msg'));
@@ -269,9 +276,10 @@ class SharedEmailTest extends BrowserTestBase {
       'pass[pass1]' => 'Test1Password',
       'pass[pass2]' => 'Test1Password',
     ];
+    $this->drupalGet('admin/people/create');
 
     // Attempt to create a new account using an existing email address.
-    $this->drupalPostForm('admin/people/create', $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(t('Created a new user account for @name. No email has been sent.', ['@name' => $edit['name']]));
     $this->assertSession()->pageTextNotContains($this->config('sharedemail.settings')->get('sharedemail_msg'));
